@@ -1,86 +1,61 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-unordered_map<string, int> numbers = {
-    {"zero", 0},
-    {"one", 1},
-    {"two", 2},
-    {"three", 3},
-    {"four", 4},
-    {"five", 5},
-    {"six", 6},
-    {"seven", 7},
-    {"eight", 8},
-    {"nine", 9},
-};
-
-int solve(vector<string> nums) {
+int valid(string s, int game) {
     int res = 0;
-    for (const string &s : nums) {
-        int num;
-        int num_index = INT_MAX;
-        int index = INT_MAX;
-        int min_num;
-        for (const auto &p : numbers) {
-            int i = s.find(p.first);
-            if (i != string::npos && i < index) {
-                index = i;
-                min_num = p.second;
-            }
+    int red = 0, green = 0, blue = 0;
+    for (int i = 8; i < s.size();) {
+        int k = 0;
+        while (isdigit(s[i])) {
+            k *= 10;
+            k += s[i] - 48;
+            ++i;
         }
-        for (int i = 0; i < s.size(); ++i) {
-            if (s[i] >= 48 && s[i] <= 57) {
-                num_index = i;
-                num = (s[i] - 48) * 10;
+        ++i;
+        switch (s[i]) {
+            case 'r':
+                cout << red << " " << k << endl;
+                red = max(red, k);
+                i += 5;
                 break;
-            }
-        }
-        if (index < num_index) {
-            num = min_num * 10;
-        }
-        //cout << num << endl;
-
-        index = 0;
-        num_index = 0;
-        for (const auto &p : numbers) {
-            int i = s.rfind(p.first);
-            //cout << p.first << " " << i << endl;
-            if (i != string::npos && i > index) {
-                index = i;
-                min_num = p.second;
-            }
-        }
-        //cout << index << " " << min_num << endl;
-
-        int num2;
-        for (int i = s.size()-1; i >= 0; --i) {
-            if (s[i] >= 48 && s[i] <= 57) {
-                num_index = i;
-                num2 = (s[i] - 48);
+            case 'g':
+                cout << green << " " << k << endl;
+                green = max(green, k);
+                i += 7;
                 break;
-            }
+            case 'b':
+                cout << blue << " " << k << endl;
+                blue = max(blue, k);
+                i += 6;
+                break;
         }
-        //cout << num2 << " " << num_index << endl;
-
-        if (index > num_index) {
-            num += min_num;
-        } else {
-            num += num2;
-        }
-        res += num;
-        cout << num << endl;
+    }
+    cout << (red + green + blue) << endl;
+    return red * green * blue;
+}
+int solve(vector<string>& games) {
+    int res = 0;
+    int i = 0;
+    for (int i = 0; i < games.size(); ++i) {
+        res += valid(games[i], i + 1);
     }
     return res;
 }
+
 int main() {
-    
-    cout << "adl;fjalkdfj" << endl;
     vector<string> input;
+    int sum = 0;
     int n;
     string s;
-    while (cin >> s) {
+    char delimiter;
+    int game;
+    while (getline(cin, s)) {
+        cout << s << endl;
         input.push_back(s);
     }
-    
+    cout << "input read" << endl;
     cout << solve(input) << endl;
+    return 0;
+    
+    //cout << solve(input) << endl;
 }
